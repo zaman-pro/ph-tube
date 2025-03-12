@@ -18,7 +18,6 @@ function loadVideos() {
 
 const loadCategoryVideos = (id) => {
   const url = `https://openapi.programming-hero.com/api/phero-tube/category/${id}`;
-  console.log(url);
 
   fetch(url)
     .then((res) => res.json())
@@ -45,7 +44,6 @@ const displayVideos = (videos) => {
   videoContainer.innerHTML = "";
 
   videos.forEach((video) => {
-    console.log(video);
     const videoCard = document.createElement("div");
 
     videoCard.innerHTML = `
