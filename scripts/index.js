@@ -4,7 +4,6 @@ function removeActiveClass() {
   for (let btn of activeButtons) {
     btn.classList.remove("active");
   }
-  console.log(activeButtons);
 }
 
 // fetch data for categories button
@@ -19,8 +18,10 @@ function loadCategories() {
     .then((data) => displayCategories(data["categories"]));
 }
 
-function loadVideos() {
-  fetch("https://openapi.programming-hero.com/api/phero-tube/videos")
+function loadVideos(searchText = ``) {
+  fetch(
+    `https://openapi.programming-hero.com/api/phero-tube/videos?title=${searchText}`
+  )
     .then((response) => response.json())
     .then((data) => {
       removeActiveClass();
@@ -57,7 +58,6 @@ function displayCategories(categories) {
 }
 
 const loadVideoDetails = (videoId) => {
-  console.log(videoId);
   const url = `https://openapi.programming-hero.com/api/phero-tube/video/${videoId}`;
   fetch(url)
     .then((res) => res.json())
@@ -65,8 +65,6 @@ const loadVideoDetails = (videoId) => {
 };
 
 const DisplayVideoDetails = (video) => {
-  console.log(video.description);
-
   document.getElementById("video_details").showModal();
 
   const detailsContainer = document.getElementById("details-container");
@@ -117,7 +115,9 @@ const displayVideos = (videos) => {
     videoCard.innerHTML = `
     <div class="card bg-base-100">
         <figure class="relative">
-          <img class="w-full h-[150px] object-cover rounded-lg" src="${video.thumbnail}" />
+          <img class="w-full h-[150px] object-cover rounded-lg" src="${
+            video.thumbnail
+          }" />
           <span
             class="absolute bottom-2 right-2 bg-black/50 text-white rounded text-sm px-2"
             >3hrs 56 min ago</span
@@ -138,19 +138,31 @@ const displayVideos = (videos) => {
             </h2>
             <p class="flex gap-1 text-sm text-gray-400">
             ${video.authors[0].profile_name}
-            <img class="w-5 h-5" src="https://img.icons8.com/?size=48&id=98A4yZTt9abw&format=png" alt="">
+            
+            
+            ${
+              video.authors[0].verified == true
+                ? `<img class="w-5 h-5" src="https://img.icons8.com/?size=48&id=98A4yZTt9abw&format=png" alt="">`
+                : ``
+            }
             </p>
             <p class="text-sm text-gray-400">
             ${video.others.views}
             </p>
           </div>
           </div>
-          <button onclick="loadVideoDetails('${video.video_id}')" class="btn btn-block">Show Details</button>
+          <button
+          onclick="loadVideoDetails('${video.video_id}')"
+          class="btn btn-block">Show Details</button>
         </div>
     `;
 
     videoContainer.append(videoCard);
   });
 };
-
+document.getElementById("search-input").addEventListener("keyup", (e) => {
+  const input = e.target.value;
+  loadVideos(input);
+});
 loadCategories();
+loadVideos();
