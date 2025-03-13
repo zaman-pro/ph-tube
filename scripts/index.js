@@ -56,6 +56,42 @@ function displayCategories(categories) {
   }
 }
 
+const loadVideoDetails = (videoId) => {
+  console.log(videoId);
+  const url = `https://openapi.programming-hero.com/api/phero-tube/video/${videoId}`;
+  fetch(url)
+    .then((res) => res.json())
+    .then((data) => DisplayVideoDetails(data.video));
+};
+
+const DisplayVideoDetails = (video) => {
+  console.log(video.description);
+
+  document.getElementById("video_details").showModal();
+
+  const detailsContainer = document.getElementById("details-container");
+
+  detailsContainer.innerHTML = `
+      <ul class="list">
+      <li class="list-row">
+        <div>
+          <img
+            class="size-10 rounded-box"
+            src="${video.authors[0].profile_picture}"
+          />
+        </div>
+        <div>
+          <div>${video.authors[0].profile_name}</div>
+          <div class="text-xs font-semibold opacity-60">
+            ${video.title}
+          </div>
+        </div>
+        <p class="list-col-wrap text-xs">${video.description}</p>
+      </li>
+    </ul>
+  `;
+};
+
 const displayVideos = (videos) => {
   const videoContainer = document.getElementById("video-container");
 
@@ -109,6 +145,7 @@ const displayVideos = (videos) => {
             </p>
           </div>
           </div>
+          <button onclick="loadVideoDetails('${video.video_id}')" class="btn btn-block">Show Details</button>
         </div>
     `;
 
